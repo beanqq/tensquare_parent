@@ -16,7 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/label")
-@CrossOrigin
+@CrossOrigin  //解决跨域问题
 public class LabelController {
 
         @Autowired
