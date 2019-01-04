@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Created by Administrator on 2018/11/19.
+ * 基础标签web层
  */
 @RestController
 @RequestMapping("/label")
