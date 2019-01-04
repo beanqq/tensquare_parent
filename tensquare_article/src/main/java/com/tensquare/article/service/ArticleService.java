@@ -93,6 +93,7 @@ public int thumbup(String id){
 
 	/**
 	 * 根据ID查询实体   ,放入缓存中
+	 * 用spring data redis可以简化操作
 	 * @param id
 	 * @return
 	 */
