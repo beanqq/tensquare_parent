@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2018/11/19.
  * 基础标签web层
+ * 北京合众伟奇科技有限公司
  */
 @RestController
 @RequestMapping("/label")
