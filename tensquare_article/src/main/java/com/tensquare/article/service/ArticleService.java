@@ -94,6 +94,7 @@ public int thumbup(String id){
 	/**
 	 * 根据ID查询实体   ,放入缓存中
 	 * 用spring data redis可以简化操作
+	 * 查询数据，首先从缓存中查，如果缓存没有数据，就从数据库中查询，然后把数据保存到缓存中
 	 * @param id
 	 * @return
 	 */
@@ -105,7 +106,7 @@ public int thumbup(String id){
 		if(null==article){
 		article=articleDao.findById(id).get();//从数据库查询数据
 		redisTemplate.opsForValue().set("article_"+id,article,10,TimeUnit.SECONDS); //缓存标识，缓存，日期，日期格式
-			System.out.println("从缓存中获取文章：article_"+id);
+
 		}
 
 
