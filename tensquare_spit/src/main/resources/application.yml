@@ -7,3 +7,5 @@ spring:
     mongodb:
       database: spitdb
       host: 111.230.94.87
+  redis:
+    host: 111.230.94.87   #redis\u670D\u52A1\u5668ip

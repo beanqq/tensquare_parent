@@ -9,11 +9,15 @@
         <module name="tensquare_article" />
         <module name="tensquare_base" />
         <module name="tensquare_common" />
-        <module name="tensquare_gathering" />
+        <module name="tensquare_gathing" />
         <module name="tensquare_qa" />
         <module name="tensquare_recruit" />
+        <module name="tensquare_search" />
         <module name="tensquare_spit" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="tensquare_gathering" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

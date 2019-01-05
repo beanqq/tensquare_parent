@@ -8,10 +8,10 @@
         <version>2.1.1.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.tensquare.spit</groupId>
-    <artifactId>tensquare_spit</artifactId>
+    <groupId>com.tensquare.search</groupId>
+    <artifactId>tensquare_search</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tensquare_spit</name>
+    <name>tensquare_search</name>
     <description>Demo project for Spring Boot</description>
 
     <properties>
@@ -21,11 +21,7 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -37,7 +33,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>com.tensquare</groupId>
             <artifactId>tensquare_common</artifactId>
