@@ -1,28 +1,22 @@
 package com.tensquare.user.service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Selection;
-
+import com.tensquare.user.dao.AdminDao;
+import com.tensquare.user.pojo.Admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import util.IdWorker;
 
-import com.tensquare.user.dao.AdminDao;
-import com.tensquare.user.pojo.Admin;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 服务层
@@ -38,6 +32,24 @@ public class AdminService {
 	
 	@Autowired
 	private IdWorker idWorker;
+
+	@Autowired
+	private BCryptPasswordEncoder encoder;
+
+
+	/**
+	 * 管理员密码登录教研
+	 */
+public Admin login(Admin admin){
+
+	Admin loginAdmin = adminDao.findByLoginname(admin.getLoginname());
+	if(null!=loginAdmin&&encoder.matches(admin.getPassword(),loginAdmin.getPassword())){
+		//如果管理员账户存在，或者密码加密前和加密后匹配，允许登录
+		return loginAdmin;
+	}
+       return null;
+}
+
 
 	/**
 	 * 查询全部列表
@@ -83,10 +95,15 @@ public class AdminService {
 
 	/**
 	 * 增加
+	 * 新增管理员密码加密
 	 * @param admin
 	 */
 	public void add(Admin admin) {
 		admin.setId( idWorker.nextId()+"" );
+
+		//给密码加密bcrypt算法
+		String newPassword = encoder.encode(admin.getPassword());
+		admin.setPassword(newPassword);
 		adminDao.save(admin);
 	}
 

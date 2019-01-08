@@ -1,13 +1,17 @@
 package com.tensquare.user.controller;
+
 import com.tensquare.user.pojo.User;
 import com.tensquare.user.service.UserService;
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import util.JwtUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 /**
  * 控制器层
@@ -21,6 +25,12 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private HttpServletRequest  request;  //获取请求request
+
+@Autowired
+private JwtUtil jwtUtil;
 
 
 	/**
@@ -46,6 +56,21 @@ public class UserController {
 	}
 
 
+	/**
+	 * 登录用户
+	 */
+	@PostMapping("/login")
+	public Result login(@RequestBody Map<String,String> map){
+		 String mobile=map.get("mobile");
+		 String pwd=map.get("password");
+
+		 User user=userService.login(mobile,pwd);
+      if(null==user){
+      	return new Result(false,StatusCode.ERROR,"登录失败");
+	  }
+
+		return new Result(true,StatusCode.OK,"登陆成功");
+	}
 
 
 
@@ -115,10 +140,33 @@ public class UserController {
 	
 	/**
 	 * 删除
+	 * 只有管理员才有权限删除用户
 	 * @param id
 	 */
 	@RequestMapping(value="/{id}",method= RequestMethod.DELETE)
 	public Result delete(@PathVariable String id ){
+
+		String header = request.getHeader("Authorization");
+		if(header==null){
+		return new Result(false,StatusCode.ACCESSERROR,"权限不足");
+
+	  }
+
+		if(!header.startsWith("Bearer")) {
+			return new Result(false, StatusCode.ACCESSERROR, "权限不足");
+		}
+
+	String token=header.substring(7);//提取token
+
+	Claims claims=jwtUtil.parseJWT(token);
+	if(null==claims){
+		return new Result(false, StatusCode.ACCESSERROR, "权限不足");
+	}
+    if(!"admin".equals(claims.get("roles"))){
+		return new Result(false, StatusCode.ACCESSERROR, "权限不足");
+	}
+
+
 		userService.deleteById(id);
 		return new Result(true,StatusCode.OK,"删除成功");
 	}

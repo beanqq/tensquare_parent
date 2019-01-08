@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import util.IdWorker;
 
@@ -39,6 +40,9 @@ public class UserService {
 
 	@Autowired
 	private RabbitTemplate rabbitTemplate;
+
+	@Autowired
+	private BCryptPasswordEncoder encoder;
 
 	//发送手机验证码
 	public void  sengSms(String mobile){
@@ -76,7 +80,8 @@ public class UserService {
 
 
 		user.setId(idWorker.nextId()+"");
-
+		String newPwd = encoder.encode(user.getPassword());
+		user.setPassword(newPwd);
 		user.setFollowcount(0);//关注数
 		user.setFanscount(0);//粉丝数
 		user.setOnline(0L);//在线时长
@@ -88,6 +93,22 @@ public class UserService {
 		userDao.save(user);
 
 }
+
+
+	/**
+	 * 用户登录
+	 */
+public User login(String mobile,String pwd){
+
+	User loginUser = userDao.findByMobile(mobile); //根据手机号获取用户
+
+	if(null!=loginUser&&encoder.matches(pwd,loginUser.getPassword())){
+		return loginUser;
+	}
+
+	return null;
+}
+
 
 
 
@@ -136,10 +157,14 @@ public class UserService {
 
 	/**
 	 * 增加
+	 * 给密码加密
 	 * @param user
 	 */
 	public void add(User user) {
 		user.setId( idWorker.nextId()+"" );
+		String newPwd = encoder.encode(user.getPassword());
+		user.setPassword(newPwd);
+
 		userDao.save(user);
 	}
 

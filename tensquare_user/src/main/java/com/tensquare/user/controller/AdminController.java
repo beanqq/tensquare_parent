@@ -1,22 +1,16 @@
 package com.tensquare.user.controller;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.tensquare.user.pojo.Admin;
 import com.tensquare.user.service.AdminService;
-
 import entity.PageResult;
 import entity.Result;
 import entity.StatusCode;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.*;
+import util.JwtUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 /**
  * 控制器层
  * @author Administrator
@@ -29,8 +23,32 @@ public class AdminController {
 
 	@Autowired
 	private AdminService adminService;
-	
-	
+
+
+	@Autowired
+	private JwtUtil jwtUtil;
+
+	/**
+	 * 管理员登录
+	 */
+	@PostMapping("/login")
+public Result login(@RequestBody Admin admin){
+		Admin loginAdmin = adminService.login(admin);
+		if(null==loginAdmin){
+
+			return new Result(false,StatusCode.ERROR,"登录失败");
+		}
+		//需要获取令牌
+		String token = jwtUtil.createJWT(loginAdmin.getId(), loginAdmin.getLoginname(), "admin");
+         Map<String,String> map=new HashMap<>();
+         map.put("token",token);    //令牌
+         map.put("name",loginAdmin.getLoginname()); //登录名
+
+		return new Result(true,StatusCode.OK,"登陆成功",map);
+	}
+
+
+
 	/**
 	 * 查询全部数据
 	 * @return
